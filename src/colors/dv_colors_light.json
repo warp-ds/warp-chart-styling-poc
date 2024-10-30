@@ -1,0 +1,85 @@
+{
+  "dataText": {
+    "primary": "#007ccb",
+    "secondary": "#777a80",
+    "categorical": ["#7c5df8", "#a66c00", "#ce30a7", "#008860", "#d8401c", "#1e8492", "#007ccb", "#777a80"],
+    "positive": "#008860",
+    "warning": "#a66c00",
+    "negative": "#e22344",
+    "neutral": "#777a80"
+  },
+  "chartBackground": {
+    "default": "#FFFFFF"
+  },
+  "dataFill": {
+    "primary": {
+      "default": "#2291e8",
+      "subtle": "#b4defd"
+    },
+    "secondary": {
+      "default": "#9fa2a7",
+      "subtle": "#d6d9db"
+    },
+    "categorical": [
+      { "default": "#8e79ff", "subtle": "#c7c0fd" },
+      { "default": "#d89300", "subtle": "#fdd28c" },
+      { "default": "#f96bd4", "subtle": "#fdcbee" },
+      { "default": "#00b68c", "subtle": "#92e9d4" },
+      { "default": "#f55831", "subtle": "#fdb7a6" },
+      { "default": "#3a9aa7", "subtle": "#40d9ea" },
+      { "default": "#34a9fb", "subtle": "#b4defd" },
+      { "default": "#8b8f96", "subtle": "#c5c8cb" }
+    ],
+    "positive": {
+      "default": "#00b68c",
+      "subtle": "#92e9d4"
+    },
+    "warning": {
+      "default": "#d89300",
+      "subtle": "#fdd28c"
+    },
+    "negative": {
+      "default": "#ff4258",
+      "subtle": "#fcb4c0"
+    },
+    "neutral": {
+      "default": "#8b8f96",
+      "subtle": "#c5c8cb"
+    }
+  },
+  "dataBorder": {
+    "primary": "#2291e8",
+    "secondary": "#9fa2a7",
+    "categorical": ["#8e79ff", "#d89300", "#f96bd4", "#00b68c", "#f55831", "#3a9aa7", "#34a9fb", "#8b8f96"],
+    "positive": "#00b68c",
+    "warning": "#d89300",
+    "negative": "#ff4258",
+    "neutral": "#8b8f96"
+  },
+  "chartLine": {
+    "default": "#8b8f96",
+    "subtle": "#d6d9db"
+  },
+  "dataLine": {
+    "primary": "#2291e8",
+    "secondary": "#9fa2a7",
+    "categorical": ["#7c5df8", "#d89300", "#f96bd4", "#00b68c", "#d8401c", "#1e8492", "#34a9fb", "#484b4e"],
+    "positive": "#00b68c",
+    "warning": "#d89300",
+    "negative": "#ff4258",
+    "neutral": "#8b8f96"
+  },
+  "dataIcon": {
+    "primary": "#007ccb",
+    "secondary": "#777a80",
+    "categorical": ["#7c5df8", "#a66c00", "#ce30a7", "#008860", "#d8401c", "#1e8492", "#007ccb", "#777a80"],
+    "positive": "#008860",
+    "warning": "#a66c00",
+    "negative": "#e22344",
+    "neutral": "#777a80"
+  },
+  "chartText": {
+    "default": "#47474F",
+    "subtle": "#5C5C66"
+  }
+}
