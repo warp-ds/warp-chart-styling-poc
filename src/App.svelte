@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import "@warp-ds/elements";
   import BarChart from "./components/charts/BarChart.svelte";
 
@@ -14,19 +15,59 @@
     { category: "H", value: 75 },
   ];
 
-  // Define optional properties for the chart (e.g., size)
-  let chartWidth = 800;
-  let chartHeight = 400;
+  let selectedBrand = "Finn";
+  let fontKey = 0;
+
+  async function switchBrand(brand) {
+    console.log("Switching brand to:", brand);
+    selectedBrand = brand;
+
+    const brandUrls = {
+      FINN: {
+        fonts: "https://assets.finn.no/pkg/@warp-ds/fonts/v1/finn-no.css",
+        tokens: "https://assets.finn.no/pkg/@warp-ds/css/v2/tokens/finn-no.css",
+      },
+      Tori: {
+        fonts: "https://assets.finn.no/pkg/@warp-ds/fonts/v1/tori-fi.css",
+        tokens: "https://assets.finn.no/pkg/@warp-ds/css/v2/tokens/tori-fi.css",
+      },
+      DBA: {
+        fonts: "https://assets.finn.no/pkg/@warp-ds/fonts/v1/dba-dk.css",
+        tokens: "https://assets.finn.no/pkg/@warp-ds/css/v2/tokens/dba-dk.css",
+      },
+    };
+
+    if (brandUrls[brand]) {
+      document.getElementById("brand-fonts").href = brandUrls[brand].fonts + `?t=${new Date().getTime()}`;
+      document.getElementById("brand-tokens").href = brandUrls[brand].tokens + `?t=${new Date().getTime()}`;
+    } else {
+      console.error("Brand not found:", brand);
+    }
+
+    setTimeout(() => {
+      fontKey += 1; // force re-render after font is loaded
+    }, 200);
+  }
 </script>
 
 <main>
-  <h1>Warp Design System</h1>
-  <w-button variant="primary">Primary button</w-button>
-  <h2>Bar Chart Example</h2>
-  <div style="width: 100%; max-width: 800px; height: 400px;">
-    <BarChart {data} />
+  <div class="flex gap-16">
+    <w-button variant="secondary" on:click={() => switchBrand("FINN")}>FINN</w-button>
+    <w-button variant="secondary" on:click={() => switchBrand("Tori")}>Tori</w-button>
+    <w-button variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
   </div>
 
+  <div class="s-bg-primary flex px-16 pt-8 rounded">
+    <h2 class="s-text-inverted-static">{selectedBrand}</h2>
+  </div>
+
+  <h1>Warp Design System</h1>
+  <h2>Bar Chart Example</h2>
+  <div style="width: 100%; max-width: 800px; height: 400px;">
+    {#key fontKey}
+      <BarChart {data} />
+    {/key}
+  </div>
 </main>
 
 <style>
