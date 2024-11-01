@@ -18,6 +18,10 @@
   let selectedBrand = "Finn";
   let fontKey = 0;
 
+  function handleSelectChange (event) {
+    console.log("Select change:", event.detail.value);
+  }
+
   async function switchBrand(brand) {
     console.log("Switching brand to:", brand);
     selectedBrand = brand;
@@ -46,22 +50,27 @@
 
     setTimeout(() => {
       fontKey += 1; // force re-render after font is loaded
-    }, 200);
+    }, 1000);
   }
 </script>
 
 <main>
+  
   <div class="flex gap-16">
-    <w-button variant="secondary" on:click={() => switchBrand("FINN")}>FINN</w-button>
-    <w-button variant="secondary" on:click={() => switchBrand("Tori")}>Tori</w-button>
-    <w-button variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
-  </div>
+    <!-- <w-select label="Brand" on:select-change={handleSelectChange}>
+      <option value='FINN' selected>FINN</option>
+      <option value='Tori'>Tori</option>
+      <option value='DBA'>DBA</option>
+      </w-select> -->
+      <w-button variant="secondary" on:click={() => switchBrand("FINN")}>FINN</w-button>
+      <w-button variant="secondary" on:click={() => switchBrand("Tori")}>Tori</w-button>
+      <w-button variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
+    </div>
 
-  <div class="s-bg-primary flex px-16 pt-8 rounded">
-    <h2 class="s-text-inverted-static">{selectedBrand}</h2>
-  </div>
+    <div class="s-bg-primary flex px-16 pt-8 mb-32 rounded">
+      <h2 class="s-text-inverted-static">Brand: {selectedBrand}</h2>
+    </div>
 
-  <h1>Warp Design System</h1>
   <h2>Bar Chart Example</h2>
   <div style="width: 100%; max-width: 800px; height: 400px;">
     {#key fontKey}
