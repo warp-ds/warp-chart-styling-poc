@@ -1,6 +1,6 @@
 <script>
   import dvColors from "../../colors/dv_colors_light.json";
-  import { activeBar, tooltip } from "../../lib/dataStore.js";
+  import { activeBar, tooltipPos, visible, content } from "../../lib/dataStore.js";
 
   export let index; // Unique index for each bar
   export let value; // Value to display in tooltip
@@ -11,54 +11,62 @@
   export let barFill = dvColors.dataFill.primary.default;
   export let rounded = true;
   export let delay = 0;
- 
+  export let innerHeight = 0;
+
+  $: barPadding = 0.2 * barWidth;
+  $: innerXPos = xPos + barPadding;
+  $: innerBarWidth = barWidth - barPadding * 2;
+
+  let reducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
+
   // Animation
   let startSize = 0.7;
 
   const cornerRadius = 4;
 
   // 50% height path for the animation start
-  $: pathDataAnimationStart = `M ${xPos} ${yPos + barHeight} 
+  $: pathDataAnimationStart = `M ${innerXPos} ${yPos + barHeight} 
                  V ${yPos + barHeight - startSize * barHeight + cornerRadius} 
-                 Q ${xPos} ${yPos + barHeight - startSize * barHeight} ${xPos + cornerRadius} ${yPos + barHeight - startSize * barHeight} 
-                 H ${xPos + barWidth - cornerRadius} 
-                 Q ${xPos + barWidth} ${yPos + barHeight - startSize * barHeight} ${xPos + barWidth} ${yPos + barHeight - startSize * barHeight + cornerRadius} 
+                 Q ${innerXPos} ${yPos + barHeight - startSize * barHeight} ${innerXPos + cornerRadius} ${yPos + barHeight - startSize * barHeight} 
+                 H ${innerXPos + innerBarWidth - cornerRadius} 
+                 Q ${innerXPos + innerBarWidth} ${yPos + barHeight - startSize * barHeight} ${innerXPos + innerBarWidth} ${yPos + barHeight - startSize * barHeight + cornerRadius} 
                  V ${yPos + barHeight} 
-                 H ${xPos} Z`;
+                 H ${innerXPos} Z`;
 
   // Compute the path string for the bar shape with rounded top corners
-  $: pathData = `M ${xPos} ${yPos + barHeight} 
+  $: pathData = `M ${innerXPos} ${yPos + barHeight} 
                  V ${yPos + cornerRadius} 
-                 Q ${xPos} ${yPos} ${xPos + cornerRadius} ${yPos} 
-                 H ${xPos + barWidth - cornerRadius} 
-                 Q ${xPos + barWidth} ${yPos} ${xPos + barWidth} ${yPos + cornerRadius} 
+                 Q ${innerXPos} ${yPos} ${innerXPos + cornerRadius} ${yPos} 
+                 H ${innerXPos + innerBarWidth - cornerRadius} 
+                 Q ${innerXPos + innerBarWidth} ${yPos} ${innerXPos + innerBarWidth} ${yPos + cornerRadius} 
                  V ${yPos + barHeight} 
-                 H ${xPos} Z`;
+                 H ${innerXPos} Z`;
 
   function showTooltip(event) {
     activeBar.set(index); // Set the active bar
-    tooltip.set({
-      visible: true,
-      x: xPos,
+    visible.set(true);
+    content.set(`Value: ${value}`);
+    tooltipPos.set({
+      x: xPos + barWidth / 2,
       y: yPos - 20,
-      content: `Value: ${value}`,
     });
+
     console.log("showTooltip:", index, value);
   }
 
   function hideTooltip() {
-    activeBar.set(null); // Clear the active bar
-    tooltip.set({ visible: false, content: "" });
+    // activeBar.set(null); // Clear the active bar
+    // tooltip.set({ visible: false, content: "" });
     console.log("hideTooltip:");
   }
 
   function handleFocus(event) {
     activeBar.set(index); // Set the active bar for keyboard focus
-    tooltip.set({
-      visible: true,
-      x: xPos + barWidth,
+    visible.set(true);
+    content.set(`Value: ${value}`);
+    tooltipPos.set({
+      x: xPos + barWidth / 2,
       y: yPos - 20,
-      content: `Value: ${value}`,
     });
     console.log("handleFocus:", index, value);
   }
@@ -67,27 +75,48 @@
     hideTooltip(); // Hide tooltip on blur
     console.log("handleBlur");
   }
-  
 </script>
 
-<g role="button"
-  tabindex="0" 
-  on:mouseenter={showTooltip} 
-  on:mouseleave={hideTooltip} 
-  on:focus={handleFocus} 
-  on:blur={handleBlur}>
+<g
+  role="button"
+  tabindex="0"
+  on:mouseenter={showTooltip}
+  on:mouseleave={hideTooltip}
+  on:focus={handleFocus}
+  on:blur={handleBlur}
+>
+  <!-- Full height hover -->
+  <rect
+    x={xPos}
+    y="0"
+    width={barWidth}
+    height={innerHeight}
+    fill={$visible && $activeBar === index ? "#9FA2A726" : "#9FA2A700"}
+    style="transition: fill 0.3s ease;"
+  ></rect>
+
   {#if rounded}
-    <path d={pathData} fill={barFill} style="--animation-delay: {delay}s;">
-      <animate attributeName="d" from={pathDataAnimationStart} to={pathData} dur="1s" fill={$activeBar === index ? "steelblue" : "yellow"} begin="{delay}s" />
+    <path
+      d={pathData}
+      fill={$visible && $activeBar === index ? "#007CCB" : barFill}
+      style="--animation-delay: {delay}s; transition: fill 0.3s ease;"
+      stroke="white"
+      stroke-width="2"
+    >
+      {#if !reducedMotion}
+        <animate attributeName="d" from={pathDataAnimationStart} to={pathData} dur="1s" begin="{delay}s" />
+      {/if}
     </path>
   {:else}
     <rect
-      x={xPos}
+      x={innerXPos}
       y={yPos}
-      width={barWidth}
+      width={innerBarWidth}
       height={barHeight}
-      fill={barFill}
-      style="--animation-delay: {delay}s;"
+      fill={$visible && $activeBar === index ? "#007CCB" : barFill}
+      stroke="white"
+      stroke-width="2"
+      style="--animation-delay: {delay}s; transition: fill 0.3s ease;"
     ></rect>
   {/if}
 </g>
@@ -112,6 +141,7 @@
   @media (prefers-reduced-motion: reduce) {
     path,
     rect {
+      opacity: 1;
       animation: none; /* Disable animations */
     }
   }

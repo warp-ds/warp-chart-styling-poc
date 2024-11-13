@@ -1,12 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import { scaleBand, scaleLinear } from "d3";
-
+  import { visible } from "../../lib/dataStore.js";
 
   import Bar from "../subcomponents/Bar.svelte";
   import XAxis from "../subcomponents/XAxis.svelte";
   import YAxis from "../subcomponents/YAxis.svelte";
-  import Tooltip from "../subcomponents/Tooltip.svelte";  
+  import Tooltip from "../subcomponents/Tooltip.svelte";
 
   export let data = [];
   export let margin = { top: 20, right: 30, bottom: 40, left: 50 };
@@ -23,11 +23,10 @@
   // Scales
   $: xScale = scaleBand()
     .domain(data.map((d) => d.category))
-    .range([0, innerWidth])
-    .padding(0.4);
+    .range([0, innerWidth]);
 
   $: yScale = scaleLinear()
-    .domain([0, Math.max(...data.map((d) => d.value))])
+    .domain([0, Math.max(...data.map((d) => d.value)) * 1.05])
     .nice()
     .range([innerHeight, 0]);
 
@@ -37,7 +36,8 @@
     yPos: yScale(d.value),
     barWidth: xScale.bandwidth(),
     barHeight: innerHeight - yScale(d.value),
-    delay: 0.2  }));
+    delay: 0.2,
+  }));
 
   // Use ResizeObserver to detect changes in the container size
   onMount(() => {
@@ -63,7 +63,8 @@
 </script>
 
 <div class="chart-container" bind:this={container}>
-  <svg {width} {height} viewBox={`0 0 ${width} ${height}`}>
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <svg {width} {height} viewBox={`0 0 ${width} ${height}`} on:mouseleave={() => visible.set(false)}>
     <g transform={`translate(${margin.left}, ${margin.top})`}>
       <!-- Render the reusable Y-axis with gridlines -->
       <YAxis {yScale} {innerWidth} showGridlines={false} />
@@ -71,15 +72,26 @@
       {#if showBars}
         <!-- Render Bars -->
         {#each barData as bar, i (i + "-" + innerWidth + "-" + innerHeight)}
-          <Bar xPos={bar.xPos} yPos={bar.yPos} barWidth={bar.barWidth} barHeight={bar.barHeight} delay={i*0.2} value={data[i].value} index={i} rounded={true}
+          <Bar
+            xPos={bar.xPos}
+            yPos={bar.yPos}
+            barWidth={bar.barWidth}
+            barHeight={bar.barHeight}
+            delay={i * 0.2}
+            value={data[i].value}
+            index={i}
+            rounded={true}
+            innerHeight={innerHeight}
           ></Bar>
         {/each}
       {/if}
       <!-- Render the reusable X-axis -->
-      <XAxis {xScale} {innerHeight} {tickFormat}/>
+      <XAxis {xScale} {innerHeight} {tickFormat} />
     </g>
   </svg>
-  <Tooltip {margin} />
+  {#if $visible}
+    <Tooltip {margin} />
+  {/if}
 </div>
 
 <style>

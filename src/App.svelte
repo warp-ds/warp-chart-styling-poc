@@ -3,17 +3,16 @@
   import "@warp-ds/elements";
   import BarChart from "./components/charts/BarChart.svelte";
 
-  // Define the data for the bar chart
   const data = [
-    { category: "A", value: 30 },
-    { category: "B", value: 80 },
-    { category: "C", value: 45 },
-    { category: "D", value: 60 },
-    { category: "E", value: 20 },
-    { category: "F", value: 90 },
-    { category: "G", value: 55 },
-    { category: "H", value: 75 },
-  ];
+  { category: "A", value: Math.floor(Math.random() * 95) },
+  { category: "B", value: Math.floor(Math.random() * 95) },
+  { category: "C", value: Math.floor(Math.random() * 95) },
+  { category: "D", value: Math.floor(Math.random() * 95) },
+  { category: "E", value: Math.floor(Math.random() * 95) },
+  { category: "F", value: Math.floor(Math.random() * 95) },
+  { category: "G", value: Math.floor(Math.random() * 95) },
+  { category: "H", value: Math.floor(Math.random() * 95) },
+];
 
   let selectedBrand = "Finn";
   let fontKey = 0;

@@ -1,16 +1,27 @@
 <script>
-  import { activeBar, tooltip } from "../../lib/dataStore.js";
-  import { fly } from 'svelte/transition';
-  $: ({ visible, x, y, content } = $tooltip);
+  import { tooltipPos, content } from "../../lib/dataStore.js";
+  import { fly } from "svelte/transition";
+  $: ({ x, y } = $tooltipPos);
 
   export let margin = {};
+  let tooltipWidth;
+  let tooltipHeight;
+
+  const yNudge = 10;
+
+  $: xPosition = x + margin.left - tooltipWidth / 2;
+  $: yPosition = y + margin.top + yNudge - tooltipHeight;
 </script>
 
-{#if visible}
-  <div class="tooltip" style="top: {y + margin.top}px; left: {x + margin.left}px;" transition:fly={{ y: 10 }}>
-    {content}
-  </div>
-{/if}
+<div
+  class="tooltip"
+  style="top: {yPosition}px; left: {xPosition}px;"
+  transition:fly={{ y: 5 }}
+  bind:clientWidth={tooltipWidth}
+  bind:clientHeight={tooltipHeight}
+>
+  {$content}
+</div>
 
 <style>
   .tooltip {
@@ -21,5 +32,6 @@
     border-radius: 4px;
     pointer-events: none;
     font-size: 12px;
+    transition: top 300ms ease, left 300ms ease;
   }
 </style>
