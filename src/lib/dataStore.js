@@ -2,8 +2,9 @@
 import { writable } from "svelte/store";
 
 export const activeBar = writable(null);  
-export const visible = writable(false);
+export const tooltipVisible = writable(false);
 export const content = writable("");
+export const touchDevice = writable(false);
 
 export const tooltipPos = writable({
   x: 0,

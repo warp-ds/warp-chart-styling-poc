@@ -1,5 +1,5 @@
 <script>
-  import { tooltipPos, content } from "../../lib/dataStore.js";
+  import { tooltipPos, content, touchDevice } from "../../lib/dataStore.js";
   import { fly } from "svelte/transition";
   $: ({ x, y } = $tooltipPos);
 
@@ -9,8 +9,9 @@
 
   const yNudge = 10;
 
+  $: yPosition = $touchDevice ? margin.top + yNudge - tooltipHeight : y + margin.top + yNudge - tooltipHeight;
   $: xPosition = x + margin.left - tooltipWidth / 2;
-  $: yPosition = y + margin.top + yNudge - tooltipHeight;
+
 </script>
 
 <div
@@ -32,6 +33,21 @@
     border-radius: 4px;
     pointer-events: none;
     font-size: 12px;
-    transition: top 300ms ease, left 300ms ease;
+    transition:
+      top 300ms ease,
+      left 300ms ease;
   }
+
+  .tooltip::after {
+    content: ""; /* Required for the pseudo-element */
+    position: absolute;
+    bottom: -6px; /* Position the arrow slightly below the tooltip */
+    left: 50%; /* Center the arrow horizontally */
+    transform: translateX(-50%); /* Adjust the arrow's position */
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid black; /* Matches the tooltip background */
+  }
+
+ 
 </style>

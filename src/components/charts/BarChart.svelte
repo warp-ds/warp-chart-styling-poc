@@ -1,7 +1,13 @@
 <script>
   import { onMount } from "svelte";
   import { scaleBand, scaleLinear } from "d3";
-  import { visible } from "../../lib/dataStore.js";
+  import { tooltipVisible, activeBar, touchDevice } from "../../lib/dataStore.js";
+
+  let currentActiveBar;
+  activeBar.subscribe((value) => {
+    currentActiveBar = value;
+    console.log("Other component activeBar updated:", currentActiveBar);
+  });
 
   import Bar from "../subcomponents/Bar.svelte";
   import XAxis from "../subcomponents/XAxis.svelte";
@@ -11,12 +17,19 @@
   export let data = [];
   export let margin = { top: 20, right: 30, bottom: 40, left: 50 };
   export let tickFormat = (d) => d;
+  export let showGridlines = false;
 
   let container;
   let width = 0;
   let height = 0;
   let showBars = false;
 
+// Test in one of your components:
+setTimeout(() => {
+  activeBar.set(2); // Set to a test value
+  console.log("Manually setting activeBar to 2");
+}, 2000);
+  
   $: innerWidth = Math.max(0, width - margin.left - margin.right);
   $: innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
@@ -36,7 +49,7 @@
     yPos: yScale(d.value),
     barWidth: xScale.bandwidth(),
     barHeight: innerHeight - yScale(d.value),
-    delay: 0.2,
+    delay: 0.1,
   }));
 
   // Use ResizeObserver to detect changes in the container size
@@ -64,10 +77,10 @@
 
 <div class="chart-container" bind:this={container}>
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <svg {width} {height} viewBox={`0 0 ${width} ${height}`} on:mouseleave={() => visible.set(false)}>
+  <svg {width} {height} viewBox={`0 0 ${width} ${height}`} on:mouseleave={() => tooltipVisible.set(false)}>
     <g transform={`translate(${margin.left}, ${margin.top})`}>
       <!-- Render the reusable Y-axis with gridlines -->
-      <YAxis {yScale} {innerWidth} showGridlines={false} />
+      <YAxis {yScale} {innerWidth} {showGridlines} />
 
       {#if showBars}
         <!-- Render Bars -->
@@ -77,11 +90,11 @@
             yPos={bar.yPos}
             barWidth={bar.barWidth}
             barHeight={bar.barHeight}
-            delay={i * 0.2}
+            delay={i * 0.1}
             value={data[i].value}
             index={i}
             rounded={true}
-            innerHeight={innerHeight}
+            {innerHeight}
           ></Bar>
         {/each}
       {/if}
@@ -89,10 +102,12 @@
       <XAxis {xScale} {innerHeight} {tickFormat} />
     </g>
   </svg>
-  {#if $visible}
+  {#if $tooltipVisible}
     <Tooltip {margin} />
   {/if}
 </div>
+<p>Active bar: {currentActiveBar}</p>
+<p>Touch device: {$touchDevice} </p>
 
 <style>
   .chart-container {

@@ -3,21 +3,34 @@
   import "@warp-ds/elements";
   import BarChart from "./components/charts/BarChart.svelte";
 
-  const data = [
-  { category: "A", value: Math.floor(Math.random() * 95) },
-  { category: "B", value: Math.floor(Math.random() * 95) },
-  { category: "C", value: Math.floor(Math.random() * 95) },
-  { category: "D", value: Math.floor(Math.random() * 95) },
-  { category: "E", value: Math.floor(Math.random() * 95) },
-  { category: "F", value: Math.floor(Math.random() * 95) },
-  { category: "G", value: Math.floor(Math.random() * 95) },
-  { category: "H", value: Math.floor(Math.random() * 95) },
-];
+  let data = [
+    { category: "A", value: Math.floor(Math.random() * 95) },
+    { category: "B", value: Math.floor(Math.random() * 95) },
+    { category: "C", value: Math.floor(Math.random() * 95) },
+    { category: "D", value: Math.floor(Math.random() * 95) },
+    { category: "E", value: Math.floor(Math.random() * 95) },
+    { category: "F", value: Math.floor(Math.random() * 95) },
+    { category: "G", value: Math.floor(Math.random() * 95) },
+    { category: "H", value: Math.floor(Math.random() * 95) },
+  ];
 
   let selectedBrand = "Finn";
   let fontKey = 0;
+  let dataKey = 0;
+  $: combinedKey = `${fontKey}-${dataKey}`;
 
-  function handleSelectChange (event) {
+  let showGridlines = false;
+
+  function newData() {
+    const numCategories = Math.floor(Math.random() * 18) + 3;
+    data = Array.from({ length: numCategories }, (_, i) => ({
+      category: String.fromCharCode(65 + i),
+      value: Math.floor(Math.random() * 95),
+    }));
+    dataKey += 1;
+  }
+
+  function handleSelectChange(event) {
     console.log("Select change:", event.detail.value);
   }
 
@@ -54,26 +67,32 @@
 </script>
 
 <main>
-  
   <div class="flex gap-16">
     <!-- <w-select label="Brand" on:select-change={handleSelectChange}>
       <option value='FINN' selected>FINN</option>
       <option value='Tori'>Tori</option>
       <option value='DBA'>DBA</option>
       </w-select> -->
-      <w-button variant="secondary" on:click={() => switchBrand("FINN")}>FINN</w-button>
-      <w-button variant="secondary" on:click={() => switchBrand("Tori")}>Tori</w-button>
-      <w-button variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
-    </div>
+    <w-button type="button" variant="secondary" on:click={() => switchBrand("FINN")}>FINN</w-button>
+    <w-button type="button" variant="secondary" on:click={() => switchBrand("Tori")}>Tori</w-button>
+    <w-button type="button" variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
+  </div>
 
-    <div class="s-bg-primary flex px-16 pt-8 mb-32 rounded">
-      <h2 class="s-text-inverted-static">Brand: {selectedBrand}</h2>
-    </div>
+  <div class="s-bg-primary flex px-16 pt-8 mb-16 rounded">
+    <h2 class="s-text-inverted-static">Brand: {selectedBrand}</h2>
+  </div>
+
+  <div class="flex gap-16 mb-16">
+    <w-button variant="secondary" on:click={() => (showGridlines = !showGridlines)}>
+      {showGridlines ? "Hide gridlines" : "Show gridlines"}
+    </w-button>
+    <w-button variant="secondary" on:click={() => newData()}>Random data</w-button>
+  </div>
 
   <h2>Bar Chart Example</h2>
-  <div style="width: 100%; max-width: 800px; height: 400px;">
-    {#key fontKey}
-      <BarChart {data} />
+  <div style="width: 100%; max-width: 800px; height: 350px;">
+    {#key combinedKey}
+      <BarChart {data} {showGridlines} />
     {/key}
   </div>
 </main>
