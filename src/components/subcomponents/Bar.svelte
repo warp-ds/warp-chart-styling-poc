@@ -1,6 +1,6 @@
 <script>
   import dvColors from "../../colors/dv_colors_light.json";
-  import { activeBar, tooltipPos, tooltipVisible, content, touchDevice } from "../../lib/dataStore.js";
+  import { activeBar, tooltipPos, tooltipVisible, content, touchDevice, forcedReduceMotion } from "../../lib/dataStore.js";
 
   export let index; // Unique index for each bar
   export let value; // Value to display in tooltip
@@ -12,13 +12,16 @@
   export let rounded = true;
   export let delay = 0;
   export let innerHeight = 0;
+  export let borderWidth = 2;
 
   // $: innerBarWidth = (barWidth * 1.618) / 2.618; // Golden ratio bar width
   $: innerBarWidth = barWidth * 0.66; // custom percentage bar width
   $: barPadding = (barWidth - innerBarWidth) / 2;
   $: innerXPos = xPos + barPadding;
 
-  let reducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
+  let systemReducedMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
+  $: reducedMotion = systemReducedMotion || $forcedReduceMotion;
+  $: transitionTime = reducedMotion ? "0s" : "0.3s";
 
   // Animation start size for the bar
   let startSize = 0.7;
@@ -26,6 +29,7 @@
   const cornerRadius = 4;
 
   let isTouchActive = false; // Track if touch is active on mobile
+  let isFocused = false; // Track if the bar is focused
 
   function handleTouchStart() {
     touchDevice.set(true);
@@ -101,6 +105,7 @@
 
   function handleFocus(event) {
     if (!isTouchActive) {
+      isFocused = true;
       activeBar.set(index); // Set the active bar for keyboard focus
       tooltipVisible.set(true);
       content.set(`Value: ${value}`);
@@ -114,6 +119,7 @@
 
   function handleBlur() {
     if (!isTouchActive) {
+      isFocused = false;
       hideTooltip(); // Hide tooltip on blur
       console.log("handleBlur");
     }
@@ -121,13 +127,10 @@
 </script>
 
 <g
-  role="button"
-  tabindex="0"
+  role="presentation"
   data-index={index}
   on:mouseenter={showTooltip}
   on:mouseleave={hideTooltip}
-  on:focus={handleFocus}
-  on:blur={handleBlur}
   on:touchstart={handleTouchStart}
   on:touchmove={handleTouchMove}
   on:touchend={handleTouchEnd}
@@ -138,17 +141,25 @@
     y="0"
     width={barWidth}
     height={innerHeight}
-    fill={$tooltipVisible && $activeBar === index ? "#9FA2A73B" : "#9FA2A700"}
+    fill={$tooltipVisible && !isFocused && $activeBar === index ? "#9FA2A73B" : "#9FA2A700"}
     style="transition: fill 0.5s ease; opacity: 0;"
+    aria-hidden="true"    
   ></rect>
 
   {#if rounded}
     <path
       d={pathData}
       fill={$tooltipVisible && $activeBar === index ? "#007CCB" : barFill}
-      style="--animation-delay: {delay}s; transition: fill 0.3s ease-in;"
+      fill-opacity= {$tooltipVisible && $activeBar != index ? "80%" : "100%"} 
+      style="--animation-delay: {delay}s; transition: fill {transitionTime} ease-in; transition: fill-opacity {transitionTime} ease;"
       stroke="white"
-      stroke-width="2"
+      stroke-width="{borderWidth}"
+      tabindex="0"                
+      role="button"               
+      aria-label={`Bar at index ${index}`}
+      on:focus={handleFocus}
+      on:blur={handleBlur}
+      class={isFocused ? "focused" : ""}
     >
       {#if !reducedMotion}
         <animate
@@ -170,8 +181,14 @@
       height={barHeight}
       fill={$tooltipVisible && $activeBar === index ? "#007CCB" : barFill}
       stroke="white"
-      stroke-width="2"
-      style="--animation-delay: {delay}s; transition: fill 0.3s ease-in;"
+      stroke-width="{borderWidth}"
+      style="--animation-delay: {delay}s; transition: fill {transitionTime}  ease-in;"
+      tabindex="0"                
+      role="button"               
+      aria-label={`Bar at index ${index}`}
+      on:focus={handleFocus}
+      on:blur={handleBlur}
+      class={isFocused ? "focused" : ""}
     ></rect>
   {/if}
 </g>
@@ -184,9 +201,10 @@
     animation-delay: var(--animation-delay);
   }
 
-  g:focus {
-    outline: 2px solid #06BEFB; /* Example blue outline */
-    outline-offset: 2px; /* Adds spacing between element and outline */
+  path:focus,
+  rect:focus  {
+    outline: 3px solid #06befb;
+    outline-offset: -1px; 
   }
 
   @keyframes fadeIn {

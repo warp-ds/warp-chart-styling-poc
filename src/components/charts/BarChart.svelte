@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { scaleBand, scaleLinear } from "d3";
-  import { tooltipVisible, activeBar, touchDevice } from "../../lib/dataStore.js";
+  import { tooltipVisible, activeBar, touchDevice, forcedReduceMotion } from "../../lib/dataStore.js";
 
   let currentActiveBar;
   activeBar.subscribe((value) => {
@@ -23,6 +23,7 @@
   let width = 0;
   let height = 0;
   let showBars = false;
+  let borderWidth = 2;
 
 // Test in one of your components:
 setTimeout(() => {
@@ -87,13 +88,14 @@ setTimeout(() => {
         {#each barData as bar, i (i + "-" + innerWidth + "-" + innerHeight)}
           <Bar
             xPos={bar.xPos}
-            yPos={bar.yPos}
+            yPos={bar.yPos - borderWidth/2}
             barWidth={bar.barWidth}
-            barHeight={bar.barHeight}
-            delay={i * 0.1}
+            barHeight={bar.barHeight + borderWidth/2}
+            delay={$forcedReduceMotion ? 0 : i * 0.1}
             value={data[i].value}
             index={i}
             rounded={true}
+            {borderWidth}
             {innerHeight}
           ></Bar>
         {/each}
@@ -106,11 +108,14 @@ setTimeout(() => {
     <Tooltip {margin} />
   {/if}
 </div>
-<p>Active bar: {currentActiveBar}</p>
-<p>Touch device: {$touchDevice} </p>
+<!-- <p>Active bar: {currentActiveBar}</p>
+<p>Touch device: {$touchDevice} </p> -->
 
 <style>
   .chart-container {
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
     position: relative;
     width: 100%;
     height: 100%;

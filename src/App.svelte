@@ -2,9 +2,10 @@
   import { onMount } from "svelte";
   import "@warp-ds/elements";
   import BarChart from "./components/charts/BarChart.svelte";
+  import { touchDevice, forcedReduceMotion } from "./lib/dataStore.js";
 
   let data = [
-    { category: "A", value: Math.floor(Math.random() * 95) },
+    { category: "A", value: 80 },
     { category: "B", value: Math.floor(Math.random() * 95) },
     { category: "C", value: Math.floor(Math.random() * 95) },
     { category: "D", value: Math.floor(Math.random() * 95) },
@@ -67,7 +68,7 @@
 </script>
 
 <main>
-  <div class="flex gap-16">
+  <div class="flex gap-16 mb-32">
     <!-- <w-select label="Brand" on:select-change={handleSelectChange}>
       <option value='FINN' selected>FINN</option>
       <option value='Tori'>Tori</option>
@@ -78,15 +79,26 @@
     <w-button type="button" variant="secondary" on:click={() => switchBrand("DBA")}>DBA</w-button>
   </div>
 
-  <div class="s-bg-primary flex px-16 pt-8 mb-16 rounded">
-    <h2 class="s-text-inverted-static">Brand: {selectedBrand}</h2>
-  </div>
+  <h1>{selectedBrand} style</h1>
 
-  <div class="flex gap-16 mb-16">
-    <w-button variant="secondary" on:click={() => (showGridlines = !showGridlines)}>
-      {showGridlines ? "Hide gridlines" : "Show gridlines"}
-    </w-button>
-    <w-button variant="secondary" on:click={() => newData()}>Random data</w-button>
+  <!-- Options -->
+  <div class="flex gap-16 mb-16 items-center">
+    <w-button variant="primary" small on:click={() => newData()}>Randomize data</w-button>
+
+    <label>
+      <input type="checkbox" bind:checked={showGridlines} />
+      Gridlines
+    </label>
+
+    <label>
+      <input type="checkbox" bind:checked={$touchDevice} />
+      Touch
+    </label>
+
+    <label>
+      <input type="checkbox" bind:checked={$forcedReduceMotion} />
+      Reduced motion
+    </label>
   </div>
 
   <h2>Bar Chart Example</h2>
@@ -94,6 +106,21 @@
     {#key combinedKey}
       <BarChart {data} {showGridlines} />
     {/key}
+  </div>
+
+  <div class="mt-32">
+    <p class="font-bold">Things to test:</p>
+    <ul class="list-disc pl-16">
+      <li>Hover state styling & colours</li>
+      <li>Tooltip placement</li>
+      <li>Keyboard navigation styling & colours</li>
+      <li>Loading dataviz colours from JSON</li>
+      <li>Text style in SVG chart</li>
+      <li>Interactivity on touch devices</li>
+      <li>Animation & reduced motion</li>
+      <li>Responsivity and bar width</li>
+      <li>Components, sub components, props for components</li>
+    </ul>
   </div>
 </main>
 

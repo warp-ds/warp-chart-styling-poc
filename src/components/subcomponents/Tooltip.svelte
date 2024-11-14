@@ -1,5 +1,5 @@
 <script>
-  import { tooltipPos, content, touchDevice } from "../../lib/dataStore.js";
+  import { tooltipPos, content, touchDevice, forcedReduceMotion } from "../../lib/dataStore.js";
   import { fly } from "svelte/transition";
   $: ({ x, y } = $tooltipPos);
 
@@ -11,21 +11,25 @@
 
   $: yPosition = $touchDevice ? margin.top + yNudge - tooltipHeight : y + margin.top + yNudge - tooltipHeight;
   $: xPosition = x + margin.left - tooltipWidth / 2;
-
 </script>
 
 <div
   class="tooltip"
   style="top: {yPosition}px; left: {xPosition}px;"
-  transition:fly={{ y: 5 }}
+  transition:fly={{ y: 5, duration: $forcedReduceMotion ? 0 : 300 }}
   bind:clientWidth={tooltipWidth}
   bind:clientHeight={tooltipHeight}
 >
-  {$content}
+  <p class="m-0">
+    {$content}
+  </p>
 </div>
 
 <style>
   .tooltip {
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
     position: absolute;
     padding: 4px 8px;
     background: black;
@@ -36,6 +40,9 @@
     transition:
       top 300ms ease,
       left 300ms ease;
+    box-shadow:
+      0px 3px 6px 0px rgba(0, 0, 0, 0.1),
+      0px 3px 8px 0px rgba(0, 0, 0, 0.16);
   }
 
   .tooltip::after {
@@ -48,6 +55,4 @@
     border-right: 6px solid transparent;
     border-top: 6px solid black; /* Matches the tooltip background */
   }
-
- 
 </style>
