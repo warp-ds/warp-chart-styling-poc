@@ -7,6 +7,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/warp-chart-styling-poc/',
   build: {
     target: 'esnext' // Ensures support for Top-level await
   },
