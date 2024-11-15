@@ -1,6 +1,6 @@
 # WARP chart components experiment
 
-**This is a prototype / proof of concept to test:**
+**This is a prototype / Proof Of Concept (POC) to test:**
 - Hover states (colour changes on selected element vs other elements)
   - Is it necessary to define hover colours?
 - Using DataViz colours from a JSON
@@ -14,8 +14,6 @@
 - Animation (loading chart, tooltip placement, responsive)
 - Responsivity (horizontal scaling of chart, bar widths etc)
 - Components, sub components, props for components
-- Is it possible to build Web Components components in Svelte?
-
 
 ## How to run
 
@@ -23,7 +21,6 @@
 `npm run dev`
 
 Built using Vite & Svelte. D3 is used for scales.
-
 
 ## Current components and props
 - **Bar chart** props:
