@@ -20,7 +20,7 @@
   bind:clientWidth={tooltipWidth}
   bind:clientHeight={tooltipHeight}
 >
-  <p class="m-0">
+  <p class="m-0 text-body">
     {$content}
   </p>
 </div>
@@ -48,11 +48,11 @@
   .tooltip::after {
     content: ""; /* Required for the pseudo-element */
     position: absolute;
-    bottom: -6px; /* Position the arrow slightly below the tooltip */
+    bottom: -8px; /* Position the arrow slightly below the tooltip */
     left: 50%; /* Center the arrow horizontally */
     transform: translateX(-50%); /* Adjust the arrow's position */
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid black; /* Matches the tooltip background */
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid black; /* Matches the tooltip background */
   }
 </style>

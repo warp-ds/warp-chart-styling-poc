@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import "@warp-ds/elements";
   import BarChart from "./components/charts/BarChart.svelte";
-  import { touchDevice, forcedReduceMotion } from "./lib/dataStore.js";
+  import { touchDevice, forcedReduceMotion, dimOtherBars, intensifyActiveBar } from "./lib/dataStore.js";
 
   let data = [
     { category: "A", value: 80 },
@@ -82,7 +82,7 @@
   <h1>{selectedBrand} style</h1>
 
   <!-- Options -->
-  <div class="flex gap-16 mb-16 items-center">
+  <div class="flex flex-wrap gap-16 mb-16 items-center">
     <w-button variant="primary" small on:click={() => newData()}>Randomize data</w-button>
 
     <label>
@@ -94,6 +94,17 @@
       <input type="checkbox" bind:checked={$touchDevice} />
       Touch
     </label>
+
+    <label>
+      <input type="checkbox" bind:checked={$dimOtherBars} />
+      Dim other bars
+    </label>
+
+    <label>
+      <input type="checkbox" bind:checked={$intensifyActiveBar} />
+      Intensify active bar
+    </label>
+
 
     <label>
       <input type="checkbox" bind:checked={$forcedReduceMotion} />

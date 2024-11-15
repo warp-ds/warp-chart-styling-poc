@@ -1,6 +1,6 @@
 <script>
   import dvColors from "../../colors/dv_colors_light.json";
-  import { activeBar, tooltipPos, tooltipVisible, content, touchDevice, forcedReduceMotion } from "../../lib/dataStore.js";
+  import { activeBar, tooltipPos, tooltipVisible, content, touchDevice, forcedReduceMotion, dimOtherBars, intensifyActiveBar } from "../../lib/dataStore.js";
 
   export let index; // Unique index for each bar
   export let value; // Value to display in tooltip
@@ -149,8 +149,8 @@
   {#if rounded}
     <path
       d={pathData}
-      fill={$tooltipVisible && $activeBar === index ? "#007CCB" : barFill}
-      fill-opacity= {$tooltipVisible && $activeBar != index ? "80%" : "100%"} 
+      fill={$intensifyActiveBar && $tooltipVisible && $activeBar === index ? "#007CCB" : barFill}
+      fill-opacity= {$dimOtherBars && $tooltipVisible && $activeBar != index ? "80%" : "100%"} 
       style="--animation-delay: {delay}s; transition: fill {transitionTime} ease-in; transition: fill-opacity {transitionTime} ease;"
       stroke="white"
       stroke-width="{borderWidth}"
